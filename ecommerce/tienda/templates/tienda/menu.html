@@ -1,0 +1,260 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tolennegros Desert`s - Pasteles bien ricos</title>
+    <link rel="stylesheet" href="{% static 'styles/styles.css' %}">
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="{% static 'images/nigga.png' %}" alt="Tolennegros Desert`s Logo">
+        </div>
+        <h1>Tolennegros Desert`s</h1>
+        <nav>
+            <ul>
+                <li><a href="#productos" onclick="mostrarSeccion('productos')">Productos</a></li>
+                <li><a href="#carrito" onclick="mostrarSeccion('carrito')">Carrito</a></li>
+                <li><a href="#contacto" onclick="mostrarSeccion('contacto')">Contacto</a></li>
+                <li><a href="#terminosycondiciones" onclick="mostrarSeccion('terminosycondiciones')">Términos y Condiciones</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="productos" class="seccion" style="display:none;">
+        <h2>Productos</h2>
+        <div id="productos-container">
+            <div class="producto" onmouseover="cambiarColor(this, true)" onmouseout="cambiarColor(this, false)" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <h3>Pastel de Chocolate</h3>
+                <img src="{% static 'images/pastel blanco.png' %}" alt="Pastel de Chocolate" style="width: 200px; height: 130px;">
+                <p>Precio: <span id="precioPastel">15</span> USD</p>
+                <p>Descripción: Pastel de chocolate amargo cubierto de chocolate blanco</p>
+                <button onclick="agregarAlCarrito(this, document.getElementById('precioPastel').innerText)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" onmouseover="cambiarColor(this, true)" onmouseout="cambiarColor(this, false)" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <h3>Galletas de Vainilla</h3>
+                <img src="{% static 'images/galletas vainilla.png' %}" alt="Galletas de Vainilla" style="width: 200px; height: 130px;">
+                <p>Precio: <span id="precioGalletas">8</span> USD</p>
+                <p>Descripción: Deliciosas galletas cubiertas de vainilla</p>
+                <button onclick="agregarAlCarrito(this, document.getElementById('precioGalletas').innerText)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" onmouseover="cambiarColor(this, true)" onmouseout="cambiarColor(this, false)" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <h3>Tarta de Frutas</h3>
+                <img src="{% static 'images/tarta frutas.png' %}" alt="Tarta de Frutas" style="width: 200px; height: 130px;">
+                <p>Precio: <span id="precioTarta">20</span> USD</p>
+                <p>Descripción: Pastel con frutas de temporada</p>
+                <button onclick="agregarAlCarrito(this, document.getElementById('precioTarta').innerText)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" onmouseover="cambiarColor(this, true)" onmouseout="cambiarColor(this, false)" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <h3>Pay de Limón</h3>
+                <img src="{% static 'images/pay limon.png' %}" alt="Pay de Limón" style="width: 200px; height: 130px;">
+                <p>Precio: <span id="precioPayLimon">50</span> USD</p>
+                <p>Descripción: Pay relleno con limón y cubierto con canela</p>
+                <button onclick="agregarAlCarrito(this, document.getElementById('precioPayLimon').innerText)">Agregar al Carrito</button>
+            </div>
+            <div class="producto" onmouseover="cambiarColor(this, true)" onmouseout="cambiarColor(this, false)" style="text-align: center; display: flex; flex-direction: column; align-items: center;">
+                <h3>Pay de Banana</h3>
+                <img src="{% static 'images/pay banana.png' %}" alt="Pay de Banana" style="width: 200px; height: 130px;">
+                <p>Precio: <span id="precioPayBanana">35</span> USD</p>
+            </p>
+            <p>Descripción: Pay con rebanadas de plátano macho</p>
+            <button onclick="agregarAlCarrito(this, document.getElementById('precioPayBanana').innerText)">Agregar al Carrito</button>
+        </div>
+    </div>
+</section>
+
+<section id="carrito" class="seccion" style="display:none;">
+    <h2>Carrito de Compras</h2>
+    <div id="carrito-container">
+        <p>¡Tu carrito está vacío!</p>
+    </div>
+    <button onclick="vaciarCarrito()">Vaciar Carrito</button>
+    <p id="total-carrito"></p>
+    <div id="mercadopago-form" style="display:none;">
+        <form id="payment-form">
+            <div id="form-checkout">
+                <input type="text" id="form-checkout__cardholderName" placeholder="Titular de la tarjeta">
+                <input type="email" id="form-checkout__cardholderEmail" placeholder="E-mail">
+                <input type="text" id="form-checkout__cardNumber" placeholder="Número de la tarjeta">
+                <input type="text" id="form-checkout__cardExpirationMonth" placeholder="Mes de expiración">
+                <input type="text" id="form-checkout__cardExpirationYear" placeholder="Año de expiración">
+                <input type="text" id="form-checkout__securityCode" placeholder="Código de seguridad">
+                <select id="form-checkout__issuer"></select>
+                <select id="form-checkout__installments"></select>
+                <select id="form-checkout__identificationType"></select>
+                <input type="text" id="form-checkout__identificationNumber" placeholder="Número de identificación">
+                <button type="submit" id="form-checkout__submit">Pagar</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section id="contacto" class="seccion" style="display:none;">
+    <h2>Contacto</h2>
+    <p>Puedes contactarnos mediante el siguiente correo electrónico: contacto@tolennegrosdeserts.com</p>
+</section>
+
+<section id="terminosycondiciones" class="seccion" style="display:none;">
+    <h2>Términos y Condiciones</h2>
+    <div class="terminos-contenido">
+        <p>Bienvenido a Tolennegros Desert`s. Los siguientes términos y condiciones (en adelante, "Términos") rigen el uso de nuestra tienda online y la compra de productos. Al utilizar nuestro sitio web, usted acepta estos Términos en su totalidad. Si no está de acuerdo con estos Términos o cualquier parte de estos Términos, no debe usar este sitio web.</p>
+        <h3>1. Propiedad Intelectual</h3>
+        <p>El contenido publicado en este sitio web, incluidos los textos, gráficos, logos e imágenes, es propiedad de Tolennegros Desert`s o se usa con permiso y está protegido por leyes de derechos de autor y marcas registradas.</p>
+        <h3>2. Uso de la Página</h3>
+        <p>El sitio web de Tolennegros Desert`s se proporciona solo para uso personal. Está prohibido modificar, copiar, distribuir, transmitir, exhibir, realizar, reproducir, publicar, licenciar, crear obras derivadas, transferir o vender cualquier información obtenida de este sitio web.</p>
+        <h3>3. Política de Privacidad</h3>
+        <p>Nuestra Política de Privacidad, que establece cómo usamos su información, se puede consultar en [Política de Privacidad]. Al usar este sitio web, consiente el procesamiento descrito allí y garantiza que todos los datos que proporciona son precisos.</p>
+        <h3>4. Legislación Aplicable</h3>
+        <p>Estos Términos se regirán e interpretarán de acuerdo con las leyes del país de operación de Tolennegros Desert`s, sin dar efecto a ningún principio de conflictos de leyes.</p>
+        <h3>5. Cambios en los Términos</h3>
+        <p>Tolennegros Desert`s se reserva el derecho de modificar estos Términos en cualquier momento. Cualquier cambio será efectivo inmediatamente después de su publicación en el sitio web.</p>
+        <p>Para más información, por favor contacte a contacto@tolennegrosdeserts.com.</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2024 Tolennegros Desert`s - Pasteles bien ricos</p>
+</footer>
+
+<script>
+    let carrito = [];
+
+    function mostrarSeccion(seccionId) {
+        const secciones = document.getElementsByClassName('seccion');
+        for (let i = 0; i < secciones.length; i++) {
+            secciones[i].style.display = 'none';
+        }
+
+        document.getElementById(seccionId).style.display = 'block';
+        if (seccionId === 'carrito') {
+            actualizarCarrito();
+        }
+    }
+
+    function agregarAlCarrito(boton, precio) {
+        const producto = boton.parentNode;
+        const nombre = producto.querySelector('h3').innerText;
+        const precioNumerico = parseFloat(precio);
+        carrito.push({ nombre, precio: precioNumerico });
+        actualizarCarrito();
+    }
+
+    function calcularTotalCarrito() {
+        let totalCarrito = 0;
+        carrito.forEach(item => {
+            totalCarrito += item.precio;
+        });
+        return totalCarrito;
+    }
+
+    function actualizarCarrito() {
+        const carritoContainer = document.getElementById('carrito-container');
+        carritoContainer.innerHTML = '';
+
+        if (carrito.length === 0) {
+            carritoContainer.innerHTML = '<p>¡Tu carrito está vacío!</p>';
+            document.getElementById('mercadopago-form').style.display = 'none';
+        } else {
+            carrito.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.innerHTML = `
+                    <p>${item.nombre} - ${item.precio} USD</p>
+                    <button onclick="eliminarDelCarrito(${index})">Eliminar</button>
+                `;
+                carritoContainer.appendChild(itemElement);
+            });
+            document.getElementById('mercadopago-form').style.display = 'block';
+            
+            // Calcular y mostrar el total del carrito
+            const totalCarrito = calcularTotalCarrito();
+            const totalElement = document.createElement('p');
+            totalElement.textContent = `Total: ${totalCarrito} USD`;
+            document.getElementById('total-carrito').innerHTML = '';
+            document.getElementById('total-carrito').appendChild(totalElement);
+        }
+    }
+
+    function eliminarDelCarrito(index) {
+        carrito.splice(index, 1);
+        actualizarCarrito();
+    }
+
+    function vaciarCarrito() {
+        carrito = [];
+        actualizarCarrito();
+    }
+
+    // Código de MercadoPago
+    document.addEventListener("DOMContentLoaded", function() {
+        // Configuración de MercadoPago
+        const mp = new MercadoPago('YOUR_PUBLIC_KEY_HERE', {
+            locale: 'es-AR'
+        });
+
+        // Creación del formulario de tarjeta de crédito
+        const cardForm = mp.cardForm({
+            amount: '100.00',
+            autoMount: true,
+            form: {
+                id: 'form-checkout',
+                // Definir campos del formulario de pago
+            },
+            callbacks: {
+                onFormMounted: error => {
+                    if (error) return console.warn('Form Mounted handling error: ', error);
+                    console.log('Form mounted');
+                },
+                onSubmit: event => {
+                    event.preventDefault();
+
+                    // Obtener datos del formulario de pago
+                    const {
+                        paymentMethodId: payment_method_id,
+                        issuerId: issuer_id,
+                        // Obtener otros datos del formulario
+                    } = cardForm.getCardFormData();
+
+                    // Enviar datos de la transacción al servidor
+                    fetch('https://Servidor', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            // Datos de la transacción
+                        })
+                    }).then(response => response.json())
+                        .then(result => {
+                            if (result.status === 'approved') {
+                                alert('Pago aprobado');
+                            } else {
+                                alert('Error en el pago: ' + result.message);
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
+                        });
+                },
+                onFetching: resource => {
+                    console.log('Fetching resource: ', resource);
+
+                    // Bloquear botón de pago mientras se obtiene la información
+                    const payButton = document.getElementById('form-checkout__submit');
+                    payButton.setAttribute('disabled', true);
+
+                    return () => {
+                        payButton.removeAttribute('disabled');
+                    };
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+
+</html>
